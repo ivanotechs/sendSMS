@@ -1,6 +1,5 @@
 <?php
 
-namespace SMS;
  
 require '../vendor/autoload.php';
 
@@ -21,40 +20,42 @@ class sendSMS{
         
 
         $client = new Client([
-            'base_uri' => "https://6gyzzr.api.infobip.com/",
+            'base_uri' => "http://api.messaging-service.com",
             'headers' => [
-                'Authorization' => "App 6a6a6fb4edd5d58332bf5eb9f38b1465-5a1e0d19-78d7-4323-b4c7-277cb71cdd1c",
+                'Authorization' => "App d473cf628c215f716a99a5b6d621f7b6-436fecab-05b5-4dbe-9cb1-62211fff1489",
                 'Content-Type' => 'application/json',
                 'Accept' => 'application/json',
             ]
         ]);
         
-        $response = $client->request(
-            'POST',
-            'sms/2/text/advanced',
-            [
-                RequestOptions::JSON => [
-                    'messages' => [
-                        [
-                            'from' => 'ProGuide',
-                            'destinations' => [
-                                ['to' => $this->recipient]
-                            ],
-                            'text' => $this->content,
+        try {
+            $response = $client->request(
+                'POST',
+                'sms/2/text/advanced',
+                [
+                    RequestOptions::JSON => [
+                        'messages' => [
+                            [
+                                'from' => 'ProGuide',
+                                'destinations' => [
+                                    ['to' => $this->recipient]
+                                ],
+                                'text' => $this->content,
+                            ]
                         ]
-                    ]
-                ],
-            ]
-        );
+                    ],
+                ]
+            );
+        } catch (\Throwable $th) {
+            echo $th->getMessage();
+        }
+
         
-        echo("HTTP code: " . $response->getStatusCode() . PHP_EOL);
-        echo("Response body: " . $response->getBody()->getContents() . PHP_EOL);
+
     }
 }
 
 
 // test case
 
-$sms = new sendSMS();
 
-$sms->send('237670011942', 'Is your day good?');
